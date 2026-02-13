@@ -1,21 +1,30 @@
-import os
-
-import pkg_resources
+from pathlib import Path
 from setuptools import setup, find_packages
+
+
+BASE_DIR = Path(__file__).parent
+
+
+def load_requirements():
+    requirements_file = BASE_DIR / "requirements.txt"
+    with requirements_file.open() as f:
+        return [
+            line.strip()
+            for line in f
+            if line.strip() and not line.startswith("#")
+        ]
+
 
 setup(
     name="clip",
-    py_modules=["clip"],
     version="1.0",
-    description="",
+    description="CLIP model by OpenAI",
     author="OpenAI",
     packages=find_packages(exclude=["tests*"]),
-    install_requires=[
-        str(r)
-        for r in pkg_resources.parse_requirements(
-            open(os.path.join(os.path.dirname(__file__), "requirements.txt"))
-        )
-    ],
+    py_modules=["clip"],
+    install_requires=load_requirements(),
     include_package_data=True,
-    extras_require={'dev': ['pytest']},
+    extras_require={
+        "dev": ["pytest"],
+    },
 )
